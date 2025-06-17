@@ -3,6 +3,7 @@ import streamlit as st
 import csv
 import os
 from datetime import datetime
+import pandas as pd
 
 def carregar_tempos():
     tempos = st.session_state.get("tempos_execucao", {})
@@ -56,9 +57,26 @@ def exibir_questionario():
                              desempenho, esforco, frustracao, sus, concorda, comentario)
             st.success("✅ Respostas enviadas com sucesso!")
 
+    # Seção de acesso protegido para visualizar dados
+    with st.expander("🔐 Acesso Administrativo"):
+        senha = st.text_input("Digite a senha de acesso:", type="password")
+        if senha == "@Bia250415":
+            st.success("Acesso autorizado. Visualizando os dados armazenados:")
+            try:
+                df = pd.read_csv("dados/respostas_questionario.csv")
+                st.dataframe(df)
+            except Exception as e:
+                st.error(f"Erro ao carregar arquivo: {e}")
+        elif senha:
+            st.error("Senha incorreta.")
+
 def salvar_respostas(email, tempos, inconsistencias, mental, fisica, temporal,
                      desempenho, esforco, frustracao, sus, concorda, comentario):
-    arquivo = "respostas_questionario.csv"
+    diretorio = "dados"
+    if not os.path.exists(diretorio):
+        os.makedirs(diretorio)
+
+    arquivo = os.path.join(diretorio, "respostas_questionario.csv")
     existe = os.path.exists(arquivo)
 
     with open(arquivo, "a", newline="", encoding="utf-8") as csvfile:
