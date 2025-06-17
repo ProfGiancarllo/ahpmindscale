@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Comparação - AHP Tradicional</title>
+</head>
+<body>
+  <h1>Qual alternativa você prefere?</h1>
+  <form action="/resultado" method="POST">
+    <<input type="radio" name="preferida" value="{{ alternativa_i }}" required> {{ alternativa_i }}<br>
+    <input type="radio" name="preferida" value="{{ alternativa_j }}" required> {{ alternativa_j }}
+    <input type="hidden" name="metodo" value="tradicional">
+
+    <p><strong>{{ alternativa_i }}</strong> ou <strong>{{ alternativa_j }}</strong>?</p>
+
+    <label for="intensidade">Intensidade da preferência (1 a 9):</label>
+    <input type="number" name="intensidade" min="1" max="9" required>
+
+    <br><br>
+    <button type="submit">Confirmar</button>
+  </form>
+  <br>
+  <a href="/resetar" style="color:red;">🔄 Resetar Comparações</a>
+</body>
+</html>
+  

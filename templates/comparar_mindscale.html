@@ -1,0 +1,23 @@
+<form action="/resultado" method="POST">
+    <input type="hidden" name="metodo" value="mindscale">
+  
+    <p>Você prefere:</p>
+    <input type="radio" name="preferida" value="{{ alternativa_i }}" required> {{ alternativa_i }}<br>
+    <input type="radio" name="preferida" value="{{ alternativa_j }}" required> {{ alternativa_j }}
+  
+    <br><br>
+    <label for="intensidade">Intensidade (1 a 9):</label>
+    <input type="range" name="intensidade" min="1" max="9" step="1" required>
+    <span id="valor-intensidade">5</span>
+  
+    <script>
+      const slider = document.querySelector('input[name="intensidade"]');
+      const output = document.getElementById('valor-intensidade');
+      output.textContent = slider.value;
+      slider.oninput = () => output.textContent = slider.value;
+    </script>
+  
+    <br><br>
+    <button type="submit">Próximo</button>
+  </form>
+  

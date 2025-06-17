@@ -1,0 +1,7 @@
+<p>Pesos calculados: {{ pesos }}</p>
+<p>Razão de Consistência (CR): {{ CR }}</p>
+{% if CR > 0.1 %}
+    <p style="color: red;">⚠️ A matriz está inconsistente (CR &gt; 0,1). Considere revisar as comparações.</p>
+{% else %}
+    <p style="color: green;">✅ A matriz está consistente.</p>
+{% endif %}
