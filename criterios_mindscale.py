@@ -93,11 +93,11 @@ def comparar_criterios_mindscale():
             st.session_state["criterios_concluidos"] = True
             st.session_state["pesos_criterios"] = pesos
             st.session_state["nomes_criterios"] = criterios
+            finalizar_tempo("criterios")
         else:
             st.error("❌ A matriz é inconsistente (CR > 0.1). Ajuste os valores para melhorar a consistência.")
             st.session_state["inconsistencias"] += 1
     else:
         st.warning("⚠️ Preencha todos os valores da matriz antes de prosseguir.")
 
-    if st.session_state.get("criterios_concluidos"):
-        finalizar_tempo("criterios")
+   

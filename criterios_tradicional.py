@@ -84,11 +84,10 @@ def comparar_criterios_tradicional():
             st.session_state["criterios_concluidos"] = True
             st.session_state["nomes_criterios"] = criterios
             st.session_state["pesos_criterios"] = pesos
+            finalizar_tempo("criterios")
         else:
             st.error("❌ Matriz inconsistente. Ajuste os valores para melhorar a consistência.")
             st.session_state["inconsistencias"] += 1
     else:
         st.warning("⚠️ Preencha todos os valores da matriz antes de prosseguir.")
 
-    if st.session_state.get("criterios_concluidos"):
-        finalizar_tempo("criterios")

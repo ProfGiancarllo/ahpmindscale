@@ -1,4 +1,5 @@
 # questionario.py
+from turtle import setpos
 import streamlit as st
 import csv
 import os
@@ -9,6 +10,7 @@ def carregar_tempos():
     tempos = st.session_state.get("tempos_execucao", {})
     inconsistencias = st.session_state.get("inconsistencias", 0)
     return tempos, inconsistencias
+
 
 def exibir_questionario():
     st.header("📝 Questionário de Avaliação")
