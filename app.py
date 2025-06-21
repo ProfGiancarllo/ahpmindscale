@@ -1,6 +1,18 @@
 # app.py
 import streamlit as st
 import random
+for chave in [
+    "tempo_inicio_criterios", 
+    "tempo_fim_criterios", 
+    "tempo_inicio_alternativas", 
+    "tempo_fim_alternativas", 
+    "criterios_concluidos", 
+    "alternativas_concluidas", 
+    "inconsistencias",
+    "tempos_execucao"
+]:
+    if chave not in st.session_state:
+        st.session_state[chave] = None if "tempo" in chave else 0 if chave == "inconsistencias" else False
 from criterios_tradicional import comparar_criterios_tradicional
 from criterios_mindscale import comparar_criterios_mindscale
 from alternativas_tradicional import comparar_alternativas_tradicional
