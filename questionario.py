@@ -1,114 +1,30 @@
-# questionario.py
-
 import streamlit as st
-import csv
-import os
-from datetime import datetime
-import pandas as pd
-import io
-
-def carregar_tempos():
-    tempos = st.session_state.get("tempos_execucao", {})
-    inconsistencias = st.session_state.get("inconsistencias", 0)
-    return tempos, inconsistencias
+import urllib.parse
 
 def exibir_questionario():
     st.header("📝 Questionário de Avaliação")
 
-    tempos, inconsistencias = carregar_tempos()
+    # Recupera os dados armazenados durante o experimento
+    tempos = st.session_state.get("tempos_execucao", {})
+    inconsistencias = st.session_state.get("inconsistencias", 0)
+    metodo = st.session_state.get("metodo", "indefinido")
 
-    with st.form("form_questionario"):
-        st.subheader("I. Identificação")
-        email = st.text_input("1. Informe seu e-mail para receber os resultados:", max_chars=100)
+    # URL base do Google Forms
+    base_url = "https://docs.google.com/forms/d/e/1FAIpQLScDn-iexyubiO_wZ1Lqei6AT5thX88MvedT8XIvmmd_zLmvjA/viewform?usp=pp_url"
 
-        st.subheader("II. Avaliação de Carga Cognitiva – NASA-TLX (Raw-TLX)")
-        mental = st.slider("2. Demanda Mental:", 0, 100, 50)
-        fisica = st.slider("3. Demanda Física:", 0, 100, 50)
-        temporal = st.slider("4. Demanda Temporal:", 0, 100, 50)
-        desempenho = st.slider("5. Desempenho Percebido:", 0, 100, 50)
-        esforco = st.slider("6. Esforço Geral:", 0, 100, 50)
-        frustracao = st.slider("7. Frustração:", 0, 100, 50)
+    # Mapeamento dos parâmetros para os entry IDs do Google Forms
+    params = {
+        "entry.1104627828": metodo,
+        "entry.494086378": tempos.get("criterios", ""),
+        "entry.1572871620": tempos.get("alternativas", ""),
+        "entry.670818171": inconsistencias
+    }
 
-        st.subheader("III. Avaliação de Usabilidade – SUS (System Usability Scale)")
-        sus = []
-        afirmacoes = [
-            "8. Eu gostaria de usar este sistema com frequência.",
-            "9. Achei o sistema desnecessariamente complexo.",
-            "10. Achei o sistema fácil de usar.",
-            "11. Acho que precisaria da ajuda de um técnico para usar o sistema.",
-            "12. As funcionalidades do sistema estão bem integradas.",
-            "13. Achei o sistema muito inconsistente.",
-            "14. A maioria das pessoas aprenderia a usar este sistema rapidamente.",
-            "15. Achei o sistema muito confuso.",
-            "16. Me senti confiante usando o sistema.",
-            "17. Precisei aprender muitas coisas antes de conseguir usar o sistema."
-        ]
-        for i, texto in enumerate(afirmacoes):
-            valor = st.radio(texto, [1, 2, 3, 4, 5], horizontal=True, key=f"sus_{i}")
-            sus.append(valor)
+    # Montagem final da URL com os parâmetros codificados
+    url_completa = base_url + "&" + urllib.parse.urlencode(params)
 
-        st.subheader("IV. Considerações Finais")
-        concorda = st.radio("18. Você concorda com o resultado final da avaliação (destino escolhido)?",
-                            ["Sim", "Não", "Parcialmente", "Não sei dizer"])
-        comentario = st.text_area("19. Gostaria de deixar algum comentário sobre sua experiência?")
-
-        enviar = st.form_submit_button("Enviar Respostas")
-
-        if enviar:
-            salvar_respostas(email, tempos, inconsistencias, mental, fisica, temporal,
-                             desempenho, esforco, frustracao, sus, concorda, comentario)
-            st.success("✅ Respostas enviadas com sucesso!")
-
-    # Área administrativa protegida
-    with st.expander("🔐 Acesso Administrativo"):
-        senha = st.text_input("Digite a senha de acesso:", type="password")
-        if senha == "admin123":
-            st.success("Acesso autorizado. Visualizando os dados armazenados:")
-            try:
-                diretorio = "dados"
-                arquivo = os.path.join(diretorio, "respostas_questionario.csv")
-                df = pd.read_csv(arquivo)
-                st.dataframe(df)
-                # Botão de download
-                csv_buffer = io.StringIO()
-                df.to_csv(csv_buffer, index=False, encoding="utf-8")
-                st.download_button(
-                    label="🔳 Baixar arquivo CSV",
-                    data=csv_buffer.getvalue(),
-                    file_name="respostas_questionario.csv",
-                    mime="text/csv"
-                )
-            except Exception as e:
-                st.error(f"Erro ao carregar arquivo: {e}")
-        elif senha:
-            st.error("Senha incorreta.")
-
-def salvar_respostas(email, tempos, inconsistencias, mental, fisica, temporal,
-                     desempenho, esforco, frustracao, sus, concorda, comentario):
-    diretorio = "dados"
-    if not os.path.exists(diretorio):
-        os.makedirs(diretorio)
-
-    arquivo = os.path.join(diretorio, "respostas_questionario.csv")
-    existe = os.path.exists(arquivo)
-
-    with open(arquivo, "a", newline="", encoding="utf-8") as csvfile:
-        writer = csv.writer(csvfile)
-
-        if not existe:
-            writer.writerow([
-                "DataHora", "Email",
-                "Tempo_Criterios", "Tempo_Alternativas", "Inconsistencias",
-                "Mental", "Fisica", "Temporal", "Desempenho", "Esforco", "Frustracao",
-                *[f"SUS_{i+1}" for i in range(10)],
-                "Concorda_Resultado", "Comentario"
-            ])
-
-        writer.writerow([
-            datetime.now().isoformat(), email,
-            tempos.get("criterios", ""), tempos.get("alternativas", ""), inconsistencias,
-            mental, fisica, temporal, desempenho, esforco, frustracao,
-            *sus,
-            concorda, comentario
-        ])
+    # Interface final para o participante
+    st.success("✅ Todas as etapas foram concluídas!")
+    st.markdown("Clique no botão abaixo para preencher o questionário final:")
+    st.markdown(f"[Preencher o Questionário no Google Forms]({url_completa})", unsafe_allow_html=True)
 
