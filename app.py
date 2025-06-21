@@ -1,6 +1,20 @@
 # app.py
 import streamlit as st
 import random
+variaveis_sessao = {
+    "tempo_inicio_criterios": None,
+    "tempo_fim_criterios": None,
+    "tempo_inicio_alternativas": None,
+    "tempo_fim_alternativas": None,
+    "criterios_concluidos": False,
+    "alternativas_concluidas": False,
+    "inconsistencias": 0,
+    "tempos_execucao": {}
+}
+
+for chave, valor_padrao in variaveis_sessao.items():
+    if chave not in st.session_state:
+        st.session_state[chave] = valor_padrao
 for chave in [
     "tempo_inicio_criterios", 
     "tempo_fim_criterios", 
