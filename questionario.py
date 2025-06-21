@@ -1,15 +1,16 @@
 # questionario.py
+
 import streamlit as st
 import csv
 import os
 from datetime import datetime
 import pandas as pd
+import io
 
 def carregar_tempos():
     tempos = st.session_state.get("tempos_execucao", {})
     inconsistencias = st.session_state.get("inconsistencias", 0)
     return tempos, inconsistencias
-
 
 def exibir_questionario():
     st.header("📝 Questionário de Avaliação")
@@ -58,14 +59,25 @@ def exibir_questionario():
                              desempenho, esforco, frustracao, sus, concorda, comentario)
             st.success("✅ Respostas enviadas com sucesso!")
 
-    # Seção de acesso protegido para visualizar dados
+    # Área administrativa protegida
     with st.expander("🔐 Acesso Administrativo"):
         senha = st.text_input("Digite a senha de acesso:", type="password")
-        if senha == "@Bia250415":
+        if senha == "admin123":
             st.success("Acesso autorizado. Visualizando os dados armazenados:")
             try:
-                df = pd.read_csv("dados/respostas_questionario.csv")
+                diretorio = "dados"
+                arquivo = os.path.join(diretorio, "respostas_questionario.csv")
+                df = pd.read_csv(arquivo)
                 st.dataframe(df)
+                # Botão de download
+                csv_buffer = io.StringIO()
+                df.to_csv(csv_buffer, index=False, encoding="utf-8")
+                st.download_button(
+                    label="🔳 Baixar arquivo CSV",
+                    data=csv_buffer.getvalue(),
+                    file_name="respostas_questionario.csv",
+                    mime="text/csv"
+                )
             except Exception as e:
                 st.error(f"Erro ao carregar arquivo: {e}")
         elif senha:
@@ -99,3 +111,4 @@ def salvar_respostas(email, tempos, inconsistencias, mental, fisica, temporal,
             *sus,
             concorda, comentario
         ])
+
