@@ -1,5 +1,4 @@
 # questionario.py
-from turtle import setpos
 import streamlit as st
 import csv
 import os
