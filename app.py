@@ -50,7 +50,7 @@ if "inconsistencias" not in st.session_state:
 
 if st.session_state.etapa == 0:
     imagem = Image.open("logo_mindscale.png")
-    st.image(imagem, use_column_width=False, width=300)
+    st.image(imagem, use_container_width=False, width=300)
 
     st.markdown("""
             Olá! 👋
