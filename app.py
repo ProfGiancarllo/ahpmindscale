@@ -1,6 +1,7 @@
 # app.py
 import streamlit as st
 import random
+from PIL import Image
 variaveis_sessao = {
     "tempo_inicio_criterios": None,
     "tempo_fim_criterios": None,
