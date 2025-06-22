@@ -48,8 +48,8 @@ if "inconsistencias" not in st.session_state:
     st.session_state.inconsistencias = 0
 
 if st.session_state.etapa == 0:
-    st.image("logoahpmindscale.png", width=180)  # substitua com o nome real se for diferente
-    st.title("🧠 Bem-vindo ao AhpMindScale")
+    imagem = Image.open("logo_mindscale.png")
+    st.image(imagem, use_column_width=False, width=300)
 
     st.markdown("""
             Olá! 👋
