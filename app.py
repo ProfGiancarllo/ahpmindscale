@@ -1,41 +1,15 @@
 # app.py
 import streamlit as st
 import random
-from PIL import Image
-variaveis_sessao = {
-    "tempo_inicio_criterios": None,
-    "tempo_fim_criterios": None,
-    "tempo_inicio_alternativas": None,
-    "tempo_fim_alternativas": None,
-    "criterios_concluidos": False,
-    "alternativas_concluidas": False,
-    "inconsistencias": 0,
-    "tempos_execucao": {}
-}
-
-for chave, valor_padrao in variaveis_sessao.items():
-    if chave not in st.session_state:
-        st.session_state[chave] = valor_padrao
-for chave in [
-    "tempo_inicio_criterios", 
-    "tempo_fim_criterios", 
-    "tempo_inicio_alternativas", 
-    "tempo_fim_alternativas", 
-    "criterios_concluidos", 
-    "alternativas_concluidas", 
-    "inconsistencias",
-    "tempos_execucao"
-]:
-    if chave not in st.session_state:
-        st.session_state[chave] = None if "tempo" in chave else 0 if chave == "inconsistencias" else False
 from criterios_tradicional import comparar_criterios_tradicional
 from criterios_mindscale import comparar_criterios_mindscale
 from alternativas_tradicional import comparar_alternativas_tradicional
 from alternativas_mindscale import comparar_alternativas_mindscale
 from questionario import exibir_questionario
 from registro_tempo import resetar_tempos
+from PIL import Image
 
-st.set_page_config(page_title="AHP com Fluxo Automatizado", layout="centered")
+st.set_page_config(page_title="AHP MindScale", layout="centered")
 
 if "etapa" not in st.session_state:
     st.session_state.etapa = 0
@@ -48,29 +22,18 @@ if "alternativas_concluidas" not in st.session_state:
 if "inconsistencias" not in st.session_state:
     st.session_state.inconsistencias = 0
 
+# Tela inicial com logo centralizado
 if st.session_state.etapa == 0:
-    imagem = Image.open("logo_mindscale.png")
-    st.image(imagem, use_container_width=False, width=300)
-
+    st.title("🧠 AHP MindScale")
+    image = Image.open("logo_mindscale.png")
+    st.image(image, use_container_width=True)
+    
     st.markdown("""
-            Olá! 👋
-
-            Você está prestes a participar de um experimento que compara duas formas de tomada de decisão baseadas no método AHP (Analytic Hierarchy Process). O objetivo é entender como diferentes formas de interação influenciam a qualidade dos julgamentos e a experiência do usuário.
-
-            Ao longo do processo, você irá:
-
-            ✅ Comparar alternativas ou critérios em pares, escolhendo qual é melhor segundo sua percepção.  
-            ✅ Utilizar uma escala intuitiva e simplificada (MindScale) ou a escala tradicional do AHP.  
-            ✅ Avaliar sua experiência ao final, com perguntas sobre facilidade de uso, esforço mental e satisfação.
-
-            ⏱️ O sistema irá registrar o tempo de resposta e a consistência dos seus julgamentos automaticamente.  
-            🔒 Todas as suas respostas serão mantidas em sigilo e utilizadas exclusivamente para fins acadêmicos.
-
-            > ⚠️ **Importante:** Não há respostas certas ou erradas. O que importa é sua percepção e experiência.  
-            > 💡 Seja sincero e siga seu raciocínio natural.
-
-            Quando estiver pronto(a), clique em **Iniciar** e siga as instruções da tela. Obrigado por contribuir com esta pesquisa!
-            """)
+    Bem-vindo ao experimento de avaliação de decisão com o método AHP!
+    
+    Clique em **Iniciar Avaliação** para começar.
+    """)
+    
     if st.button("Iniciar Avaliação"):
         st.session_state.metodo = random.choice(["tradicional", "mindscale"])
         st.session_state.etapa = 1
@@ -84,9 +47,8 @@ elif st.session_state.etapa == 1:
         comparar_criterios_mindscale()
 
     if st.session_state.criterios_concluidos:
-        if st.button("👉 Seguir à próxima etapa"):
-            st.session_state.etapa = 2
-            st.rerun()
+        st.session_state.etapa = 2
+        st.rerun()
 
 elif st.session_state.etapa == 2:
     if st.session_state.metodo == "tradicional":
@@ -95,19 +57,16 @@ elif st.session_state.etapa == 2:
         comparar_alternativas_mindscale()
 
     if st.session_state.alternativas_concluidas:
-        if st.button("👉 Seguir à próxima etapa"):
-            st.session_state.etapa = 3
-            st.rerun()
+        st.session_state.etapa = 3
+        st.rerun()
 
 elif st.session_state.etapa == 3:
     exibir_questionario()
-    if st.button("👉 Finalizar"):
-        st.session_state.etapa = 4
-        st.rerun()
+    st.session_state.etapa = 4
 
 elif st.session_state.etapa == 4:
-    st.success("✅ Processo finalizado. Obrigado por participar!")
+    st.success("✅ Processo finalizado.")
     if st.button("Refazer Avaliação"):
-        for chave in list(st.session_state.keys()):
-            del st.session_state[chave]
+        for key in list(st.session_state.keys()):
+            del st.session_state[key]
         st.rerun()
