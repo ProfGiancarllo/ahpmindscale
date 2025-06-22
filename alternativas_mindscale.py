@@ -154,20 +154,12 @@ def comparar_alternativas_mindscale():
         else:
             st.warning("⚠️ Preencha todos os valores da matriz antes de prosseguir.")
 
-    if criterios_ok == n_crit:
-        st.session_state["alternativas_concluidas"] = True
-        st.session_state["resultados_alternativas"] = resultados
-        finalizar_tempo("alternativas")
-        st.session_state["tempo_fim_alternativas"] = time.time()
+   from exibir_resultado import exibir_resultado_final
 
-        st.subheader("Resultado Final")
-        scores_finais = np.zeros(n_alt)
+if criterios_ok == n_crit:
+    st.session_state["alternativas_concluidas"] = True
+    st.session_state["resultados_alternativas"] = resultados
+    finalizar_tempo("alternativas")
 
-        for idx, criterio in enumerate(criterios):
-            scores_finais += np.array(resultados[criterio]) * pesos_criterios[idx]
+    exibir_resultado_final(alternativas, resultados, pesos_criterios, criterios)
 
-        for i, score in enumerate(scores_finais):
-            st.write(f"{alternativas[i]}: {score:.4f}")
-
-        melhor = alternativas[np.argmax(scores_finais)]
-        st.success(f"🏆 Melhor destino para viagem: **{melhor}**")
