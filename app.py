@@ -7,9 +7,8 @@ from alternativas_tradicional import comparar_alternativas_tradicional
 from alternativas_mindscale import comparar_alternativas_mindscale
 from questionario import exibir_questionario
 from registro_tempo import resetar_tempos
-from PIL import Image
 
-st.set_page_config(page_title="AHP MindScale", layout="centered")
+st.set_page_config(page_title="AHP MindScale", layout="wide")
 
 if "etapa" not in st.session_state:
     st.session_state.etapa = 0
@@ -21,52 +20,49 @@ if "alternativas_concluidas" not in st.session_state:
     st.session_state.alternativas_concluidas = False
 if "inconsistencias" not in st.session_state:
     st.session_state.inconsistencias = 0
+if "tempos_execucao" not in st.session_state:
+    st.session_state["tempos_execucao"] = {}
 
-# Tela inicial com logo centralizado
 if st.session_state.etapa == 0:
-    st.title("🧠 AHP MindScale")
-    image = Image.open("logo_mindscale.png")
-    st.image(image, use_container_width=True)
-    
+    st.image("logo_inicial.png", use_column_width=True)
+    st.title("Bem-vindo ao AHP MindScale")
+
     st.markdown("""
-    Bem-vindo ao experimento de avaliação de decisão com o método AHP!
+    Este aplicativo faz parte de uma pesquisa de doutorado.
     
-    Clique em **Iniciar Avaliação** para começar.
+    Você fará uma série de comparações e ao final responderá um pequeno questionário.
+    
+    Ao clicar em **Iniciar**, o sistema irá sortear automaticamente qual método será aplicado.
     """)
-    
-    if st.button("Iniciar Avaliação"):
-        st.session_state.metodo = random.choice(["tradicional", "mindscale"])
-        st.session_state.etapa = 1
+    if st.button("Iniciar"):
+        st.session_state.metodo = random.choice(["Tradicional", "MindScale"])
         resetar_tempos()
+        st.session_state.etapa = 1
         st.rerun()
 
 elif st.session_state.etapa == 1:
-    if st.session_state.metodo == "tradicional":
+    st.header(f"Etapa 1: Comparação de Critérios ({st.session_state.metodo})")
+    if st.session_state.metodo == "Tradicional":
         comparar_criterios_tradicional()
     else:
         comparar_criterios_mindscale()
 
     if st.session_state.criterios_concluidos:
-        st.session_state.etapa = 2
-        st.rerun()
+        if st.button("Seguir para Comparação de Alternativas"):
+            st.session_state.etapa = 2
+            st.rerun()
 
 elif st.session_state.etapa == 2:
-    if st.session_state.metodo == "tradicional":
+    st.header(f"Etapa 2: Comparação de Alternativas ({st.session_state.metodo})")
+    if st.session_state.metodo == "Tradicional":
         comparar_alternativas_tradicional()
     else:
         comparar_alternativas_mindscale()
 
     if st.session_state.alternativas_concluidas:
-        st.session_state.etapa = 3
-        st.rerun()
+        if st.button("Seguir para Questionário"):
+            st.session_state.etapa = 3
+            st.rerun()
 
 elif st.session_state.etapa == 3:
     exibir_questionario()
-    st.session_state.etapa = 4
-
-elif st.session_state.etapa == 4:
-    st.success("✅ Processo finalizado.")
-    if st.button("Refazer Avaliação"):
-        for key in list(st.session_state.keys()):
-            del st.session_state[key]
-        st.rerun()
