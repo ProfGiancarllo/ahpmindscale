@@ -14,10 +14,10 @@ def exibir_questionario():
 
     # Mapeamento atualizado com os novos entry IDs
     params = {
-        "entry.650743101": metodo,
-        "entry.1285941183": tempos.get("criterios", ""),
-        "entry.1231849445": tempos.get("alternativas", ""),
-        "entry.1140389012": inconsistencias
+        "entry.362993051": metodo,
+        "entry.1963529260": tempos.get("criterios", ""),
+        "entry.142791479": tempos.get("alternativas", ""),
+        "entry.1088570139": inconsistencias
     }
 
     # Montagem final da URL
