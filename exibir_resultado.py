@@ -37,10 +37,10 @@ def exibir_resultado():
     st.subheader("Envio de Dados da Pesquisa")
 
     # IDs dos campos do Google Forms (os entry.xxxxx que você coletou)
-    entry_metodo = "entry.1104627828"
-    entry_criterios = "entry.494086378"
-    entry_alternativas = "entry.1780294763"
-    entry_inconsistencias = "entry.1140431123"
+    entry_metodo = "entry.362993051"
+    entry_criterios = "entry.1963529260"
+    entry_alternativas = "entry.142791479"
+    entry_inconsistencias = "entry.1088570139"
 
     parametros = {
         entry_metodo: st.session_state.get("metodo", ""),
